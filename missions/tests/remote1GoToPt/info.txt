@@ -1,0 +1,34 @@
+Misja testowania zdalnego (Remote).
+Scenariusz:
+1. Wysłanie do pojazdu 1 (vehicle1) punktu docelowego.
+2. Wysłanie do pojazdu 2 (vehicle2) punktu docelowego.
+3. Wysłanie do pojazdu 1 (vehicle1) nowego punktu docelowego.
+4. Wysłanie do wszystkich pojazdów (swarm) punktu docelowego.
+
+Community    = shoreside
+ServerHost   = localhost
+ServerPort   = 9000
+
+Community    = vehicle1
+ServerHost   = localhost
+ServerPort   = 9001
+
+Community    = navigation1
+ServerHost   = localhost
+ServerPort   = 9002
+
+Community    = vehicle2
+ServerHost   = localhost
+ServerPort   = 9006
+
+Community    = navigation2
+ServerHost   = localhost
+ServerPort   = 9008
+
+Community    = vehicle3
+ServerHost   = localhost
+ServerPort   = 9010
+
+Community    = navigation3
+ServerHost   = localhost
+ServerPort   = 9012

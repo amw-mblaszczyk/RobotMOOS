@@ -1,0 +1,29 @@
+//------------------------------------------------
+// pRemote config block
+//------------------------------------------
+// Antler configuration  block
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 200
+
+  Run = MOOSDB          @ NewConsole = false
+//  Run = pLogger         @ NewConsole = false
+//  Run = pMarineViewer   @ NewConsole = false
+  Run = pRemote			@ NewConsole = true
+}
+
+ProcessConfig = pRemote
+{
+   AppTick   = 4
+   CommsTick = 4
+   
+   //Joystick buttons mappings
+   joy_rudder_code = 0x00; 	//ABS_X
+   joy_thrust_code = 0x01; 		//ABS_Y
+   joy_elevator_code = 0x05; 	//ABS_RZ
+   joy_btn_rudder_0 = 0x131;			//BTN_B
+   joy_btn_rudder_0_alt = 0x133;		//BTN_X
+   joy_btn_elevator_0 = 0x130;		//BTN_A
+   joy_btn_elevator_0_alt = 0x134;	//BTN_Y
+}
+

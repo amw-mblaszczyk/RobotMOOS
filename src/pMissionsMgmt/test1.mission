@@ -1,0 +1,1 @@
+Name=test1,Who=swarm,Speed=2,Depth=5.20000,StartPoint={-51.10000,-51.10000},EndPoint={-52.50000,-56.30000},SafetyReg={-100,-100:-75,-90:-50,-75:0,10:100,80:150,-99},MaxDepth=17.00000,MaxTime=3622.00000,lane_width=4.10000

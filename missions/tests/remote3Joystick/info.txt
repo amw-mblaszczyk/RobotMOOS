@@ -1,0 +1,34 @@
+Misja testowania zdalnego (Joystick).
+Scenariusz:
+1. Aktywacja joystick-a i wybranie vehicle1.
+2. Przełaczenie na vehicle2.
+3. Przełączenie na vehicle3.
+4. Deaktywacja joystick-a.
+
+Community    = shoreside
+ServerHost   = localhost
+ServerPort   = 9000
+
+Community    = vehicle1
+ServerHost   = localhost
+ServerPort   = 9001
+
+Community    = navigation1
+ServerHost   = localhost
+ServerPort   = 9002
+
+Community    = vehicle2
+ServerHost   = localhost
+ServerPort   = 9006
+
+Community    = navigation2
+ServerHost   = localhost
+ServerPort   = 9008
+
+Community    = vehicle3
+ServerHost   = localhost
+ServerPort   = 9010
+
+Community    = navigation3
+ServerHost   = localhost
+ServerPort   = 9012

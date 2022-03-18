@@ -1,0 +1,107 @@
+/-------------------------------------------------
+// NAME: M. Benjamin, MIT CSAIL
+// FILE: alpha.moos
+//-------------------------------------------------
+
+ServerHost   = localhost
+ServerPort   = 9002
+Community    = navigation1
+Simulator  = true
+MOOSTimeWarp = 3
+
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  Run = uSimMarine       @ NewConsole = false
+  //Run = uTimerScript         @ NewConsole = false
+}
+
+
+ProcessConfig = pShare
+{
+  AppTick    = 10
+  CommsTick	 = 10
+  
+   input = route =  localhost:9005
+  
+   //output = src_name=APPCAST, dest_name=APPCAST, route=localhost:9004
+   output = src_name=BUOYANCY_REPORT, dest_name=BUOYANCY_REPORT, route=localhost:9004
+   output = src_name=TRIM_REPORT, dest_name=TRIM_REPORT, route=localhost:9004
+   output = src_name=NAV_ALTITUDE, dest_name=NAV_ALTITUDE, route=localhost:9004
+   output = src_name=NAV_DEPTH, dest_name=NAV_DEPTH, route=localhost:9004
+   output = src_name=NAV_DRIFT_SUMMARY, dest_name=NAV_DRIFT_SUMMARY, route=localhost:9004
+   output = src_name=NAV_HEADING, dest_name=NAV_HEADING, route=localhost:9004
+   output = src_name=NAV_HEADING_OVER_GROUND, dest_name=NAV_HEADING_OVER_GROUND, route=localhost:9004
+   output = src_name=NAV_LAT, dest_name=NAV_LAT, route=localhost:9004
+   output = src_name=NAV_LONG, dest_name=NAV_LONG, route=localhost:9004
+   output = src_name=NAV_RESET_COUNT, dest_name=NAV_RESET_COUNT, route=localhost:9004
+   output = src_name=NAV_SPEED, dest_name=NAV_SPEED, route=localhost:9004
+   output = src_name=NAV_SPEED_OVER_GROUND, dest_name=NAV_SPEED_OVER_GROUND, route=localhost:9004
+   output = src_name=NAV_X, dest_name=NAV_X, route=localhost:9004
+   output = src_name=NAV_Y, dest_name=NAV_Y, route=localhost:9004
+   output = src_name=NAV_YAW, dest_name=NAV_YAW, route=localhost:9004
+   output = src_name=NAV_PITCH, dest_name=NAV_PITCH, route=localhost:9007
+
+}
+
+ProcessConfig = uSimMarine
+{
+  AppTick  	= 10
+  CommsTick	= 10
+
+  //START_POS = 0,0, 180, 0
+  //start_x       = 20
+  //start_y       = 20
+  start_heading = 180
+  start_speed   = 0
+  start_depth   = 0                                             
+  start_pos     = x=-40, y=-20, speed=0, heading=0, depth=0
+  default_water_depth = 100
+  
+  buoyancy_rate    = 0.025
+  max_depth_rate = 5
+  max_depth_rate_speed = 2.0
+  
+  drift_x       = 0                                         
+  drift_y       = 0    
+  drift_vector  = 0,0  
+  rotate_speed  = 0 
+
+  prefix        = NAV
+
+  turn_rate     = 40
+  thrust_map    = 0:0, 20:1, 40:2, 60:3, 80:4, 100:5
+  thrust_reflect = true
+}
+
+ProcessConfig = uTimerScript
+{
+   AppTick   = 2
+   CommsTick = 2
+   
+  paused        = false
+  reset_max     = unlimited
+  reset_time    = end
+  delay_reset   = 10:20
+  time_warp     = 0.25:2.0
+  script_name   = WIND
+  script_atomic = true
+ 
+  randvar = varname=ANG, min=80,   max=100, key=at_reset
+  randvar = varname=MAG, min=0.5, max=1, key=at_reset
+     
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", time=0
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", time=2
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", time=4
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", time=6
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", time=8
+  
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", time=10
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", time=12
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", time=14
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", time=16
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)}", Time=18
+}

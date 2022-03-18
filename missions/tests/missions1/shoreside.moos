@@ -1,0 +1,192 @@
+/-------------------------------------------------
+// NAME: M.B AMW
+// FILE: shoreside.moos
+//-------------------------------------------------
+
+ServerHost   = localhost
+ServerPort   = 9000
+Community    = shoreside
+MOOSTimeWarp = 3
+
+LatOrigin  = 43.825300 
+LongOrigin = -70.330400
+
+//------------------------------------------
+// Antler configuration  block
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pMarineViewer   @ NewConsole = false
+  //Run = pLogger         @ NewConsole = false
+  //Run = uXMS            @ NewConsole = false
+  //Run = uProcessWatch   @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  //Run = uTimerScript         @ NewConsole = false
+   Run = pTworzenieMisji	  @ NewConsole = false
+   Run = pHostInfo       @ NewConsole = false
+   Run = pRemote       @ NewConsole = false
+   Run = pMissionsMgmt       @ NewConsole = false
+   //Run = uFldShoreBroker @ NewConsole = false
+   //Run = iRemoteLite @ NewConsole = true
+}
+
+ProcessConfig = iRemoteLite
+{
+  //CustomJournal = Name = DESIRED_RUDDER,Key =6, History = 10,Period = 0
+  //CustomSummary = DESIRED_THRUST
+  //CustomKey = 2 : JANITOR_SWITCH @ "ACTUATION:OFF"
+ }
+ 
+ ProcessConfig = pRemote
+{
+  AppTick       = 1
+  CommsTick     = 1
+}
+
+ProcessConfig = pMissionsMgmt
+{
+  AppTick       = 1
+  CommsTick     = 1
+  
+  dir=./
+}
+
+ProcessConfig = uXMS
+{
+  AppTick       = 1
+  CommsTick     = 1
+
+  var = APPCAST_REQ
+}
+
+ProcessConfig = pLogger
+{
+  AppTick       = 10
+  CommsTick     = 10
+  
+  File          = XLOG_SHORESIDE
+  PATH          = ./
+  SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+
+	LogAuxSrc     = true
+
+  // Log it all!!!!!
+  WildCardLogging = true 
+
+  WildCardOmitPattern = *_STATUS
+  WildCardOmitPattern = DB_VARSUMMARY
+  WildCardOmitPattern = DB_RWSUMMARY
+}
+
+
+ProcessConfig = pShare
+{
+  AppTick    = 2
+  CommsTick	 = 2
+  
+  input = route =  localhost:9003
+  //output = src_name=ALA, dest_name=ALA, route=localhost:9004
+  //output = src_name=ALA, dest_name=ALA, route=localhost:9005
+  
+  //input = route =  multicast_2
+  // output = src_name=RETURN, dest_name=RETURN, route=multicast_8
+  // output = src_name=DEPLOY, dest_name=DEPLOY, route=multicast_8
+  // output = src_name=MOOS_MANUAL_OVERRIDE, dest_name=MOOS_MANUAL_OVERRIDE, route=multicast_8
+  // output = src_name=WPT_UPDATE, dest_name=WPT_UPDATE, route=multicast_8
+  // output = src_name=WPT_UPDATE_TMP, dest_name=WPT_UPDATE_TMP, route=multicast_8
+  // output = src_name=DESIRED_THRUST, dest_name=DESIRED_THRUST, route=multicast_8
+  // output = src_name=DESIRED_RUDDER, dest_name=DESIRED_RUDDER, route=multicast_8
+  // output = src_name=DESIRED_ELEVATOR, dest_name=DESIRED_ELEVATOR, route=multicast_8
+  // output = src_name=MISSION_OPER, dest_name=MISSION_OPER, route=multicast_8
+  output = src_name=TRACKED_FEATURE, dest_name=TRACKED_FEATURE, route=multicast_8
+  output = src_name=NEW_OBSTACLE, dest_name=NEW_OBSTACLE, route=multicast_8
+  output = src_name=MISSION, dest_name=MISSION, route=multicast_8
+  output = src_name=REMOTE, dest_name=REMOTE, route=multicast_8
+  output = src_name=NAVIGATION, dest_name=NAVIGATION, route=multicast_8
+  output = src_name=APPCAST_REQ_ALL, dest_name=APPCAST_REQ, route=multicast_8
+  output = src_name=APPCAST_REQ, dest_name=APPCAST_REQ, route=multicast_8
+}
+
+ProcessConfig = pHostInfo
+{
+  AppTick 	= 1
+  CommsTick = 1
+}
+
+ProcessConfig = pMarineViewer
+{
+	AppTick    = 1
+  CommsTick  = 1
+
+  TIFF_FILE            = forrest19.tif
+  set_pan_x            = -90
+  set_pan_y            = -280
+  zoom                 = 0.65
+  vehicles_shape_scale = 1.5
+  vehicles_name_mode   = names
+
+  circle_viewable_all = false
+  
+  appcast_viewable = true
+  appcast_color_scheme = indigo
+
+  scope  = MISSION_CONF
+
+  //button_one = MISSION2 # MISSION="Action=stop, Who=vehicle1"
+  //button_one = MOOS_MANUAL_OVERRIDE=false # RETURN=false
+  //button_two = RETURN # RETURN=true
+  
+  left_context[przeszkoda1] = PRZESZKODA1 = $(XPOS),$(YPOS)
+  left_context[przeszkoda2] = PRZESZKODA2 = $(XPOS),$(YPOS)
+  left_context[przeszkoda3] = PRZESZKODA3 = $(XPOS),$(YPOS)
+  
+  //REMOTE_CONF (points)
+  //button_one = REMOTE1 # REMOTE_CONF="Point={0,-50}, Speed=1, Depth=3, Who=vehicle1"
+  //button_two = REMOTE2 # REMOTE_CONF="Point={0,50}, Speed=1, Depth=3, Who=vehicle2"
+  //button_three = REMOTE3 # REMOTE_CONF="Point={50,0}, Speed=1, Depth=3, Who=vehicle1"
+  //button_four = REMOTE4 # REMOTE_CONF="Point={50,50}, Speed=2, Depth=2, Who=swarm"
+  
+  //REMOTE_CONF (Joystick)
+  //button_one = Joystic_Active1 # REMOTE_CONF="Active=true, Joy_who=vehicle1"
+  //button_two = Joystic_Vehicle2 # REMOTE_CONF="Joy_who=vehicle2"
+  //button_three = Joystic_Vehicle3 # REMOTE_CONF="Joy_who=vehicle3"
+  //button_four = Joystic_Inactive # REMOTE_CONF="Active=false"
+  
+  //MISSION_CONF
+  button_one = Mission_Create # MISSION_CONF="Action=create, Name="mission_test1", Speed=1.2, Distance=1.5, TimeStart={10,20}, Points={70,70:30,40}, Point={20,20}"
+  button_two = Mission_Save # MISSION_CONF="Action=save, Name="mission_test1""
+  button_three = Mission_Read # MISSION_CONF="Action=read, Name="mission_test1""
+  button_four = Mission_Del # MISSION_CONF="Action=delete, Name="mission_test1""
+  
+  //MISSION
+  //"Action=save, Speed=1.2, Distance=1.5, TimeStart={10,20}, Points={70,70:30,40}, Point={20,20}, Who=vehicle1"
+  //"Action=start, Who=vehicle1"
+  //"Action=stop, Who=vehicle1"
+  
+  //NAVIGATION
+  //"Points={30,40:30:20:69,40}, Who=swarm"
+  //"StartLat=20.3, StartLon=32.45, Who=swarm"
+  //"LblLat=20.23, LblLon=30.24, Who=vehicle2"
+  //"sblLat=20.23, UsblLon=30.24, Who=vehicle2"
+  
+  //button_four = REMOTE # REMOTE="JoyThrust=forward, JoyRudder=left, Who=vehicle1"
+  //button_three = REMOTE1 # REMOTE="Course=180, Speed=1, Who=vehicle1"
+  //button_three = REMOTE2 # REMOTE="Point={0,-200}, Speed=1, Depth=3, Who=vehicle1"
+  //button_four = REMOTE3 # REMOTE="Course=90, Speed=1, Depth=0, Who=vehicle1"
+  
+  //button_three = REMOTE2 # REMOTE_CONF="Active=true, Joy_who=1"
+  //button_four = REMOTE3 # REMOTE_CONF="Active=false"
+  //button_four = REMOTE2 # MISSION="Action=start, Who=vehicle1"
+  //button_two = MISSION1 # MISSION="Action=start, Who=vehicle1"
+  //button_one = MISSION # MISSION="Action=save, Speed=1.2, Depth=1.5, TimeStart={0,0}, Points={0,0:30,40}, StartPoint={0,-120}, EndPoint={20,20}, Who=vehicle1, SafetyReg={200,200:-200,200:-200,-200:200,-200}, MaxTime=200, MaxDepth=50"
+  //button_three = MISSION2 # MISSION="Action=stop, Who=vehicle1"
+  //button_three = MOOS_MANUAL_OVERRIDE=false # RETURN=false
+}
+
+
+
+

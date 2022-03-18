@@ -1,0 +1,18 @@
+//------------------------------------------------
+// pOdometry config block
+
+// Antler configuration  block
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 200
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pOdometry			@ NewConsole = true
+}
+
+ProcessConfig = pOdometry
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

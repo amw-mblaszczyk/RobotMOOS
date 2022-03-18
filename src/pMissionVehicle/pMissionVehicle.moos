@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pMissionVehicle config block
+
+ProcessConfig = pMissionVehicle
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

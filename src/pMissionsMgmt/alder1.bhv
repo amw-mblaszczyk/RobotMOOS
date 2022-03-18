@@ -1,0 +1,54 @@
+//--------    FILE: alder.bhv   -------------
+
+initialize   DEPLOY = false
+initialize   RETURN = false
+
+//----------------------------------------------
+Behavior = BHV_ConstantDepth
+{
+  name      = bhv_const_depth
+  pwt       = 100
+  duration  = no-time-limit
+  condition = DEPLOY=true
+  updates   = DEPTH_VALUE
+
+        depth = 50
+    peakwidth = 8
+    basewidth = 12
+  summitdelta = 10
+}
+
+//----------------------------------------------
+Behavior = BHV_Waypoint
+{
+  name      = waypt_survey
+  pwt       = 100
+  condition = DEPLOY=true
+  perpetual = true
+  updates   = SURVEY_UPDATES
+//  endflag   = SURVEY = false
+  endflag   = DEPLOY = false
+  endflag   = SURVEY_ENDS = points=pts={-25,-25:0,-50:25, -25}
+  wptflag	= NEXTPOINT = $(NX),$(NY)
+
+          lead = 8
+   lead_damper = 1
+         speed = 2.0   // meters per second
+        radius = 8.0
+//        points = format=lawnmower, label=dudley_survey, x=80, y=-80, width=70, height=30, lane_width=8, rows=north-south, degs=30
+//        points = format=bowtie, label=dudley_bowtie, x=80, y=-80, wid1=10, wid2=25, wid3=30, height=20
+		points=pts={-25,-25:0,-50:25, -25}
+//        repeat = 10
+  visual_hints = nextpt_color=red, nextpt_lcolor=khaki
+  visual_hints = vertex_color=yellow, line_color=white
+  visual_hints = vertex_size=2, edge_size=1
+}
+
+
+//----------------------------------------------
+Behavior = BHV_HSLine
+{
+  name        = hsline
+  time_on_leg = 20
+}
+

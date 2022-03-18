@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pSonar config block
+
+ProcessConfig = pSonar
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

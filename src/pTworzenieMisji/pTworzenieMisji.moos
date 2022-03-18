@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pTworzenieMisji config block
+
+ProcessConfig = pTworzenieMisji
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pGenVehicleState config block
+
+ProcessConfig = pGenVehicleState
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

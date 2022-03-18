@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pRemoteVehicle config block
+
+ProcessConfig = pRemoteVehicle
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pJoystickTest config block
+
+ProcessConfig = pJoystickTest
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

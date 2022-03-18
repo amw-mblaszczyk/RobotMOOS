@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pDistanceToBottom config block
+
+ProcessConfig = pDistanceToBottom
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+

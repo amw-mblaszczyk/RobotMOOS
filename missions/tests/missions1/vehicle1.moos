@@ -1,0 +1,454 @@
+/-------------------------------------------------
+// NAME: M.B AMW
+// FILE: vehicle1.moos
+//-------------------------------------------------
+
+ServerHost   = localhost
+ServerPort   = 9001
+Community    = vehicle1
+Simulator  = true
+MOOSTimeWarp = 3
+
+LatOrigin  = 43.825300 
+LongOrigin = -70.330400
+
+//------------------------------------------
+// Antler configuration  block
+ProcessConfig = ANTLER
+{
+  MSBetweenLaunches = 100
+
+  Run = MOOSDB          @ NewConsole = false
+  Run = pShare         @ NewConsole = false
+  //Run = uSimMarine       @ NewConsole = false
+  Run = pNodeReporter    @ NewConsole = false
+  Run = pMyMarinePID       @ NewConsole = false
+  Run = pHelmIvP         @ NewConsole = false
+  Run = pHostInfo        @ NewConsole = false
+  Run = pRemoteVehicle        @ NewConsole = false
+  Run = pMissionVehicle        @ NewConsole = false
+  Run = pGenVehicleState       @ NewConsole = false
+  //Run = uFldNodeBroker   @ NewConsole = false
+  //Run = pZarzadzanieKamera @ NewConsole = false
+  //Run = pDistanceToBottom @ NewConsole = false
+  //Run = pEstimateCurrent @ NewConsole = false
+  //Run = pSetSpeed @ NewConsole = false
+  //Run = pCallAlarms @ NewConsole = false
+  //Run = pGetGPS @ NewConsole = false
+  Run = uTimerScript         @ NewConsole = false
+  Run = pLogger         @ NewConsole = false
+  Run = pControlVehicleScanning @ NewConsole = false
+  //Run = pMapping         @ NewConsole = false
+  //Run = pMyObstacleMgr  @ NewConsole = false
+  //Run = pTrasaAstar  @ NewConsole = true
+  //Run = pOdometry  @ NewConsole = false
+}
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+//pShare, pSimMarine oraz PMarinePID powinny miec taka sama czestotliwosc
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+ProcessConfig = pMissionVehicle
+{
+  AppTick       = 2
+  CommsTick     = 2
+  
+}
+
+ProcessConfig = pControlVehicleScanning
+{
+  AppTick       = 2
+  CommsTick     = 2
+  
+}
+
+ProcessConfig = pGenVehicleState
+{
+  AppTick       = 2
+  CommsTick     = 2
+  
+}
+
+
+ProcessConfig = pRemoteVehicle
+{
+  AppTick       = 2
+  CommsTick     = 2
+  
+  max_vehicle_speed = 2
+  max_range_of_vehicle = 500
+  max_rudder = 100
+  rudder_step = 5
+  max_thrust = 100
+  min_thrust = -50
+  thrust_step = 5
+  max_elevator = 100
+  elevator_step = 5
+  max_vehicle_depth = 50
+}
+
+ProcessConfig = pControlMng
+{
+  AppTick       = 2
+  CommsTick     = 2
+  
+  max_vehicle_speed = 2
+  min_vehicle_speed = -1
+  min_distance_to_bottom = 1.5
+  max_range_of_vehicle = 500
+  max_rudder = 100
+  rudder_step = 5
+  max_thrust = 100
+  thrust_step = 5
+  max_elevator = 100
+  elevator_step = 5
+  max_vehicle_depth = 50
+  delay_when_start = 0
+  lbl_messages = false
+  usbl_messages = false
+  //term_report_interval = 20
+}
+
+ProcessConfig = pMapping
+{
+  AppTick       = 2
+  CommsTick     = 2
+}
+
+ProcessConfig = pLogger
+{
+  AppTick       = 1
+  CommsTick     = 1
+  
+  File          = XLOG_VEHICLE
+  PATH          = ./
+  //SyncLog       = true @ 0.2
+  AsyncLog      = true
+  FileTimeStamp = true
+
+	LogAuxSrc     = true
+	
+	Log     = VEHICLE_STATE   @ 0
+	//Log     = MOOS_MANUAL_OVERRIDE   @ 0
+	Log     = CONTROLLER_ACTIVE   @ 0
+	Log     = RUN_MISSION   @ 0
+	Log     = GO_TO_POINT   @ 0
+	Log     = RETURN   @ 0
+	Log     = SCANNING   @ 0
+	Log     = AVOID_OBST   @ 0
+	Log     = AVOID_OBST_TURN   @ 0
+	Log     = REMOTE_CONTROL   @ 0
+	Log     = MODE   @ 0
+	Log     = IVPHELM_ALLSTOP @ 0
+	Log     = IVPHELM_STATE @ 0
+	Log     = IVPHELM_ALLSTOP @ 0
+	Log     = NAV_DEPTH @ 1
+	Log     = NAV_HEADING @ 1
+	Log     = NAV_HEADING_OVER_GROUND @ 1
+	Log     = NAV_SPEED @ 1
+	Log     = NAV_SPEED_OVER_GROUND @ 1
+	Log     = NAV_X @ 1
+	Log     = NAV_Y @ 1
+	Log     = NAV_YAW @ 1
+	
+	//Log     = NODE_REPORT_LOCAL   @ 0
+
+  // Log it all!!!!!
+  WildCardLogging = false 
+  
+  //WildCardPattern = NAV_*, MOOS_*, IVPHELM_*
+
+  //WildCardOmitPattern = *_STATUS
+  //WildCardOmitPattern = DB_VARSUMMARY
+  //WildCardOmitPattern = DB_RWSUMMARY
+}
+
+ProcessConfig = pOdometry
+{
+  AppTick    = 2
+  CommsTick	 = 2
+  
+
+}
+
+ProcessConfig = pEstimateCurrent
+{
+  AppTick    = 4
+  CommsTick	 = 4
+  
+  max_vehilce_speed = 3
+}
+
+ProcessConfig = pSetSpeed
+{
+  AppTick    = 4
+  CommsTick	 = 4
+  
+  max_vehilce_speed = 3
+  maximum_error_in_heading = 20
+  scanning_speed = 1
+}
+
+ProcessConfig = pCallAlarms
+{
+  AppTick    = 5
+  CommsTick	 = 5
+}
+
+
+ProcessConfig = pShare
+{
+  AppTick    = 10
+  CommsTick	 = 10
+  
+  //input = route =  localhost:9004&multicast_8
+  input = route =  localhost:9004 & multicast_8
+  
+  // //input = route =  multicast_2
+  // //output = src_name=APPCAST_REQ, dest_name=APPCAST_REQ, route=localhost:9005
+  output = src_name=DESIRED_THRUST, dest_name=DESIRED_THRUST, route=localhost:9005
+  output = src_name=DESIRED_RUDDER, dest_name=DESIRED_RUDDER, route=localhost:9005
+  output = src_name=DESIRED_ELEVATOR, dest_name=DESIRED_ELEVATOR, route=localhost:9005
+  output = src_name=NAV_SIM_PAUSED, dest_name=NAV_SIM_PAUSED, route=localhost:9005
+  output = src_name=NAV_CURRENT_FIELD, dest_name=NAV_CURRENT_FIELD, route=localhost:9005
+  output = src_name=NAV_BUOYANCY_RATE, dest_name=NAV_BUOYANCY_RATE, route=localhost:9005
+  output = src_name=ROTATE_SPEED, dest_name=ROTATE_SPEED, route=localhost:9005
+  output = src_name=DRIFT_X, dest_name=DRIFT_X, route=localhost:9005
+  output = src_name=DRIFT_Y, dest_name=DRIFT_Y, route=localhost:9005
+  output = src_name=DRIFT_VECTOR, dest_name=DRIFT_VECTOR, route=localhost:9005
+  output = src_name=DRIFT_VECTOR_ADD, dest_name=DRIFT_VECTOR_ADD, route=localhost:9005
+  output = src_name=DRIFT_VECTOR_MULT, dest_name=DRIFT_VECTOR_MULT, route=localhost:9005
+  output = src_name=NAV_RESET, dest_name=NAV_RESET, route=localhost:9005
+  output = src_name=WATER_DEPTH, dest_name=WATER_DEPTH, route=localhost:9005
+  output = src_name=NAVIGATION, dest_name=NAVIGATION, route=localhost:9005
+  
+  output = src_name=VIEW_POLYGON, dest_name=VIEW_POLYGON, route=localhost:9003
+  output = src_name=VIEW_MARKER, dest_name=VIEW_MARKER, route=localhost:9003
+  output = src_name=VIEW_CIRCLE, dest_name=VIEW_CIRCLE, route=localhost:9003
+  output = src_name=VIEW_POINT, dest_name=VIEW_POINT, route=localhost:9003
+  output = src_name=VIEW_SEGLIST, dest_name=VIEW_SEGLIST, route=localhost:9003
+  output = src_name=APPCAST, dest_name=APPCAST, route=localhost:9003
+  output = src_name=NODE_REPORT_LOCAL, dest_name=NODE_REPORT, route=localhost:9003
+  output = src_name=PLATFORM_REPORT_LOCAL, dest_name=PLATFORM_REPORT, route=localhost:9003
+ 
+}
+
+
+
+ProcessConfig = pHostInfo
+{
+  AppTick 	= 1
+  CommsTick 	= 1
+
+  DEFAULT_HOSTIP = localhost
+}
+
+ProcessConfig = uTimerScript
+{
+   AppTick   = 2
+   CommsTick = 2
+   
+  paused        = false
+  reset_max     = unlimited
+  reset_time    = end
+  delay_reset   = 10:20
+  time_warp     = 0.25:2.0
+  script_name   = WIND
+  script_atomic = true
+ 
+  randvar = varname=ANG, min=80,   max=100, key=at_reset
+  randvar = varname=MAG, min=0.5, max=2, key=at_reset
+     
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*0.2}", time=0
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*0.2}", time=2
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*0.2}", time=4
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*0.2}", time=6
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*0.2}", time=8
+  
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*-0.2}", time=10
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*-0.2}", time=12
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*-0.2}", time=14
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*-0.2}", time=16
+  event = var=DRIFT_VECTOR_ADD, val="$(ANG),{$(MAG)*-0.2}", Time=18
+}
+
+ProcessConfig = uSimMarine
+{
+  AppTick  	= 4
+  CommsTick	= 4
+
+  //START_POS = 0,0, 180, 0
+  //start_x       = 20
+  //start_y       = 20
+  start_heading = 180
+  start_speed   = 0
+  start_depth   = 0                                             
+  start_pos     = x=-40, y=-20, speed=0, heading=0, depth=0
+  default_water_depth = 100
+  
+  buoyancy_rate    = 0.025
+  max_depth_rate = 5
+  max_depth_rate_speed = 2.0
+  
+  drift_x       = 0                                         
+  drift_y       = 0                                             
+  rotate_speed  = 0 
+
+  prefix        = NAV
+
+  turn_rate     = 40
+  thrust_map    = 0:0, 20:1, 40:2, 60:3, 80:4, 100:5
+  thrust_reflect = true
+}
+
+ProcessConfig = pMyMarinePID
+{
+  AppTick    = 10
+  CommsTick  = 10
+
+  verbose = false
+  depth_control = true
+  active_start = true
+
+  // SIM_INSTABILITY = 20
+
+  // Yaw PID controller
+  yaw_pid_kp		 = 1.2
+  yaw_pid_kd		 = 0.0
+  yaw_pid_ki		 = 0.3
+  yaw_pid_integral_limit = 0.07
+
+  // Speed PID controller
+  speed_pid_kp		 = 1.0
+  speed_pid_kd		 = 0.0
+  speed_pid_ki		 = 0.0
+  speed_pid_integral_limit = 0.07
+  
+  //Pitch PID controller
+  pitch_pid_kp                   = 1.5
+  pitch_pid_kd                   = 1.0
+  pitch_pid_ki                   = 0
+  pitch_pid_integral_limit       = 0
+
+  //ZPID controller
+  z_to_pitch_pid_kp              = 0.12
+  z_to_pitch_pid_kd              = 0
+  z_to_pitch_pid_ki              = 0.004
+  z_to_pitch_pid_integral_limit  = 0.05
+
+  //MAXIMUMS
+  maxrudder    = 100
+  maxthrust    = 100
+  maxpitch     = 15
+  maxelevator  = 13
+
+  // A non-zero SPEED_FACTOR overrides use of SPEED_PID
+  // Will set DESIRED_THRUST = DESIRED_SPEED * SPEED_FACTOR
+  speed_factor = 20
+}
+
+ProcessConfig = pHelmIvP
+{
+  AppTick    = 4
+  CommsTick  = 4
+
+  bhv_dir_not_found_ok = true
+
+  behaviors  = alpha.bhv
+  domain     = course:0:359:360
+  domain     = speed:0:2:21
+  domain     = depth:0:50:51
+  
+  //park_on_allstop = true
+  
+  //hold_on_app = pMyObstacleMgr
+}
+
+ProcessConfig = pNodeReporter
+{
+  AppTick    = 2
+  CommsTick	 = 2
+
+  platform_type   = auv
+  platform_color  = yellow
+  platform_length = 4
+}
+
+ProcessConfig = uFldNodeBroker
+{
+  AppTick   = 1
+  CommsTick = 1
+
+  //TRY_SHORE_HOST = pshare_route=localhost:$(SHORE_LISTEN)
+  TRY_SHORE_HOST = pshare_route=localhost:9003
+  //TRY_SHORE_HOST = pshare_route=192.168.1.144:9200
+
+  BRIDGE = src=VIEW_POLYGON
+  BRIDGE = src= VIEW_MARKER 
+  BRIDGE = src=VIEW_CIRCLE
+  BRIDGE = src=VIEW_POINT
+  BRIDGE = src=VIEW_SEGLIST
+  BRIDGE = src=APPCAST
+  BRIDGE = src=NODE_REPORT_LOCAL,  alias=NODE_REPORT
+  BRIDGE = src=NODE_MESSAGE_LOCAL, alias=NODE_MESSAGE
+  
+  BRIDGE = src=BHV_IPF
+}
+
+ProcessConfig = pZarzadzanieKamera
+{
+  AppTick   = 1
+  CommsTick = 1
+  
+  distnce_to_station_keep_on = 30
+  distnce_in_point = 4
+  period_to_test_speed = 4
+  acceptable_current = 0.2
+  maximum_error_in_heading = 20
+  density_of_tested_speeds = 0.1
+  adaptive_speed_change = false
+  threshold_to_decrease_speed = 0.6
+  threshold_to_increase_speed = 1
+  speed_decrease_ratio = 0.8
+  speed_increase_ratio = 1.5
+}
+
+ProcessConfig = pDistanceToBottom
+{
+	AppTick   = 2
+    CommsTick = 2
+	
+	area_depth = 50
+    noise = 0
+	noise_width = 0.1
+	filter_length = 10
+}
+
+ProcessConfig = pGetGPS
+{
+  AppTick    = 2
+  CommsTick	 = 2
+}
+
+ProcessConfig = pMyObstacleMgr                                    
+ {                                                               
+   AppTick   = 4                                                 
+   CommsTick = 4                                                 
+
+   point_var = TRACKED_FEATURE // default is TRACKED_FEATURE    
+
+   max_pts_per_cluster = 20   // default is 20                   
+   max_age_per_point   = 200   // (secs)  default is 20           
+
+   alert_range  = 40          // (meters) default is 20          
+   //ignore_range = 60          // (meters) default is -1, (off)  
+
+   lasso = false               // default is false                
+   lasso_points = 6          // default is 6                    
+   lasso_radius = 10           // (meters) default is 5
+ }  
+ 
+ ProcessConfig = pTrasaAstar
+ {
+	 AppTick   = 4                                                 
+     CommsTick = 4
+ }

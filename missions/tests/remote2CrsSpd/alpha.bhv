@@ -1,0 +1,277 @@
+//--------    FILE: alpha.bhv   -------------
+
+initialize   VEHICLE_STATE = 0
+initialize   MOOS_MANUAL_OVERRIDE = true
+initialize   CONTROLLER_ACTIVE = false
+initialize   RUN_MISSION = false
+initialize   GO_TO_POINT = false
+initialize   RETURN = false
+initialize   SCANNING = false
+initialize   AVOID_OBST = false
+initialize   AVOID_OBST_TURN = false
+initialize   REMOTE_CONTROL = true
+
+
+Set MODE = InOperation 
+{
+	VEHICLE_STATE < 4
+} Damage
+
+Set MODE = RemoteControl
+{
+	MODE = InOperation
+	REMOTE_CONTROL = true
+} AutomaticControl
+
+Set MODE = RemoteControlJoy
+{
+	MODE = InOperation:RemoteControl
+    CONTROLLER_ACTIVE = false
+}
+
+Set MODE = RemoteControlParameters
+{
+	MODE = InOperation:RemoteControl
+    CONTROLLER_ACTIVE = true
+}
+
+Set MODE = GoToPoint 
+{
+	MODE = InOperation:AutomaticControl
+	RUN_MISSION = false
+	GO_TO_POINT = true
+	RETURN = false
+} 
+
+Set MODE = RunningMission
+{
+	MODE = InOperation:AutomaticControl
+	RUN_MISSION = true
+	GO_TO_POINT = false
+	RETURN = false
+} 
+
+Set MODE = Returning
+{
+	MODE = InOperation:AutomaticControl
+	RUN_MISSION = false
+	GO_TO_POINT = false
+	RETURN = true
+} 
+
+Set MODE = RunningMissionOnDepth
+{
+	MODE = InOperation:AutomaticControl:RunningMission
+	SCANNING = false
+	AVOID_OBST = false
+} 
+
+Set MODE = RunningMissionScanning
+{
+	MODE = InOperation:AutomaticControl:RunningMission
+	SCANNING = true
+	AVOID_OBST = false
+} 
+
+Set MODE = AvoidCollisionOnDepth
+{
+	MODE = InOperation:AutomaticControl:RunningMission
+	SCANNING = false
+	AVOID_OBST = true
+} 
+
+Set MODE = AvoidCollisionScanning
+{
+	MODE = InOperation:AutomaticControl:RunningMission
+	SCANNING = true
+	AVOID_OBST = true
+} 
+
+Set MODE = AvoidCollisionOnDepthUp
+{
+	MODE = InOperation:AutomaticControl:RunningMission:AvoidCollisionOnDepth
+	AVOID_OBST_TURN = false
+} AvoidCollisionOnDepthTurn
+
+Set MODE = AvoidCollisionScanningUp
+{
+	MODE = InOperation:AutomaticControl:RunningMission:AvoidCollisionScanning
+	AVOID_OBST_TURN = false
+} AvoidCollisionScanningTurn
+
+	
+Behavior = BHV_NewWaypoint
+{ 
+  name      = waypt_survey
+  pwt       = 100
+  condition = (MODE == RunningMissionOnDepth) or (MODE == AvoidCollisionOnDepth)
+  endflag   = RETURN = true
+  endflag   = RUN_MISSION = false
+  endflag   = GO_TO_POINT = false
+  endflag   = CONSTANT_DEPTH_UPDATE = "depth=0"
+  updates    = WPT_UPDATE
+  perpetual  = true
+
+                lead = 8
+         lead_damper = 1
+       lead_to_start = true
+               speed = 1   // meters per second
+        capture_line = true
+      capture_radius = 2.0
+         slip_radius = 5.0
+	efficiency_measure = all
+	nostarve = NAV_X, NAV_Y, 5.0
+	//wsp_temp = 0.5 ----------------------------------usunac komentarz dla BHV_NewWaypoint
+	//m_threshold_for_error_track = 0.5
+	//pid_current_p = 2
+	//pid_time_p = 2
+	//max_vehicle_speed = 2
+	//time_start = -1
+
+             polygon = 60,-40 : 60,-160 : 150,-160 : 180,-100 : 150,-40
+
+               order = normal
+             //repeat  = 1
+
+    visual_hints = nextpt_color=yellow
+    visual_hints = nextpt_vertex_size=8
+    visual_hints = nextpt_lcolor=gray70
+    visual_hints = vertex_color=dodger_blue, edge_color=white
+    visual_hints = vertex_size=5, edge_size=1
+}
+
+
+
+Behavior=BHV_NewWaypoint
+{
+  name       = waypt_return
+  pwt        = 100
+  condition = MODE == Returning
+  //condition  = RETURN = true
+  //condition  = DEPLOY = true
+  //condition = DEPLOY_TO_POINT = false
+  perpetual  = true
+  updates    = RETURN_UPDATE
+  endflag   = RETURN = false
+  endflag   = RUN_MISSION = false
+  endflag   = GO_TO_POINT = false
+  endflag   = CONTROLLER_ACTIVE = false
+  endflag   = REMOTE_CONTROL = true
+  endflag   = MOOS_MANUAL_OVERRIDE = true
+  //endflag    = MISSION = complete
+	
+           lead = 8
+         lead_damper = 1
+       lead_to_start = true
+               speed = 1   // meters per second
+        capture_line = true
+      capture_radius = 5.0
+         slip_radius = 15.0
+	efficiency_measure = all
+	nostarve = NAV_X, NAV_Y, 5.0
+
+             polygon = 60,-40 : 60,-160 : 150,-160 : 180,-100 : 150,-40
+
+               order = normal
+             //repeat  = 1
+
+    visual_hints = nextpt_color=yellow
+    visual_hints = nextpt_vertex_size=8
+    visual_hints = nextpt_lcolor=gray70
+    visual_hints = vertex_color=dodger_blue, edge_color=white
+    visual_hints = vertex_size=5, edge_size=1
+ }
+ 
+ Behavior=BHV_NewWaypoint
+{
+  name       = waypt_to_point
+  pwt        = 100
+  condition = MODE == GoToPoint
+  //condition = DEPLOY_TO_POINT = true
+  //condition = DEPLOY = false
+  //condition  = RETURN = false
+  //condition  = RETURN = true
+  //condition  = DEPLOY = true
+  perpetual  = true
+  updates    = POINT_SURFACE_UPDATE
+  endflag   = RETURN = false
+  endflag   = RUN_MISSION = false
+  endflag   = GO_TO_POINT = false
+  endflag   = CONTROLLER_ACTIVE = false
+  endflag   = REMOTE_CONTROL = true
+  endflag   = MOOS_MANUAL_OVERRIDE = true
+  //endflag    = MISSION = complete
+	
+           speed = 2.0
+  capture_radius = 4.0
+     slip_radius = 8.0
+          points = 0,-20
+ }
+
+// Behavior=BHV_KeepDistanceToBottom
+// {
+  // name       = distance_to_bottom
+  // pwt        = 100
+  // condition = (MODE == RunningMissionScanning) or (MODE == AvoidCollisionScanning)
+  // //condition  = RETURN = true
+  // //condition  = DEPLOY = true
+  // perpetual  = true
+  // updates    = DIST_TO_BOTTOM_UPDATE
+  // //endflag = DEPLOY_TO_POINT = false
+  // //endflag    = MISSION = complete
+	
+ // }
+ 
+ Behavior = BHV_ConstantDepth
+ {
+   // General Behavior Parameters
+   // ---------------------------
+   name         = const_dep_survey   // example
+   pwt          = 100                // default
+   condition = (((MODE == RunningMissionOnDepth) or (MODE == AvoidCollisionOnDepth)) or ((MODE == GoToPoint))) or (MODE == Returning)
+   //condition = (MODE == AvoidCollisionOnDepth) or (MODE == GoToPoint)
+   //condition = MODE == GoToPoint
+   updates      = CONSTANT_DEPTH_UPDATE  // example
+
+   // Parameters specific to this behavior
+   // ------------------------------------
+            basewidth = 100          // default
+                depth =  0          // default
+   depth_mismatch_var = DEPTH_DIFF   // example
+             duration=no-time-limit 
+            peakwidth = 3            // default
+          summitdelta = 50           // default
+		  perpetual  = true
+ }
+ 
+ Behavior = BHV_OpRegion
+ {
+   // General Behavior Parameters
+   // ---------------------------
+   name         = op_region                 // example
+   pwt          = 100                       // default
+   condition    = ((MODE == RunningMission) or (MODE == GoToPoint)) or (MODE == Returning)              // example
+   updates      = OPREGION_UPDATES          // example
+
+   // Parameters specific to this behavior
+   // ------------------------------------
+                  max_time = 0              // default (seconds)
+                 max_depth = 0              // default (meters)
+              min_altitude = 0              // default (meters)
+                 reset_var = OPREGION_RESET // example
+        trigger_entry_time = 1              // default (seconds)
+         trigger_exit_time = 0.5            // default (seconds) 
+
+                   //polygon = pts={-80,-50:-30,-175:150,-100:95,25}, label=area_x
+
+       breached_depth_flag = OPREGION_INFO = ERROR: the max depth has been excceded
+        breached_poly_flag = OPREGION_INFO = ERROR: the op region has been violated
+        breached_time_flag = OPREGION_INFO = ERROR: the maximum mission time has been exceeded
+
+              visual_hints = vertex_color = brown  // default
+              visual_hints = vertex_size  = 3      // default
+              visual_hints = edge_color   = aqua   // default
+              visual_hints = edge_size    = 1      // default
+ }
+
+

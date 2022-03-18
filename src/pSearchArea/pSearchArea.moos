@@ -1,0 +1,9 @@
+//------------------------------------------------
+// pSearchArea config block
+
+ProcessConfig = pSearchArea
+{
+   AppTick   = 4
+   CommsTick = 4
+}
+
